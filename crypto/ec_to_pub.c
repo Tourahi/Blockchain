@@ -25,6 +25,7 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 	*/
 	point = EC_KEY_get0_public_key(key);
 	group = EC_KEY_get0_group(key);
+
 	if (!point || !group)
 		return (NULL);
 
@@ -33,9 +34,9 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 	*EC_POINT_point2oct must be supplied with a buffer long enough
 	 to store the octet string.
 	*/
-	if (!EC_POINT_point2oct(group, point
-	, POINT_CONVERSION_UNCOMPRESSED
-	, pub, EC_PUB_LEN, NULL))
+	if (!EC_POINT_point2oct(group, point, POINT_CONVERSION_UNCOMPRESSED, pub
+		, EC_PUB_LEN
+		, NULL))
 		return (NULL);
 
 	return (pub);
