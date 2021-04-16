@@ -52,7 +52,8 @@ EC_KEY *ec_load(char const *folder);
 /*
 *	 signs a given set of bytes, using a given EC_KEY private key
 */
-uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg, size_t msglen, sig_t *sig);
+uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg,
+	size_t msglen, sig_t *sig);
 
 #endif
 
