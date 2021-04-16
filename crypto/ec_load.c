@@ -5,12 +5,12 @@
  * @folder: path of the folder the files are stored in
  * Return: EC_KEY key pair
  */
-EC_KEY* ec_load(char const* folder)
+EC_KEY *ec_load(char const *folder)
 {
 	char file[FILE_LENGTH];
-	FILE* fptr = NULL;
+	FILE *fptr = NULL;
 	struct stat stbuf;
-	EC_KEY* key = NULL;
+	EC_KEY *key = NULL;
 
 	if (!folder)
 		return (NULL);
