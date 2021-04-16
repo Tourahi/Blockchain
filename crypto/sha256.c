@@ -5,7 +5,7 @@
  * sha256 - computes the hash of a sequence of bytes
  * @s : the sequence of bytes to be hashed
  * @len : the number of bytes to hash in s
- * @d : the stored hash
+ * @di : the stored hash
  *
  * Return: A pointer to digest
  */
