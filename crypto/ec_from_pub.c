@@ -24,7 +24,8 @@ EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN])
 	if (!point)
 		return (NULL);
 
-	isConverted = EC_POINT_oct2point(EC_KEY_get0_group(key), point, pub, EC_PUB_LEN, NULL);
+	isConverted = EC_POINT_oct2point(EC_KEY_get0_group(key), point, pub
+		, EC_PUB_LEN, NULL);
 	isPublicKeySet = EC_KEY_set_public_key(key, point);
 
 	if (!isConverted || !isPublicKeySet)
