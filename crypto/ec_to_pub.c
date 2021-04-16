@@ -9,15 +9,15 @@
  */
 uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 {
-	if (!key || !pub)
-		return (NULL);
-
 	/**
 	*The public key is an EC_POINT on the curve calculated by
 	multiplying the generator for the curve by the private key
 	*/
 	const EC_POINT *point = NULL;
 	const EC_GROUP *group = NULL;
+
+	if (!key || !pub)
+		return (NULL);
 
 	/**
 	*Get the EC_POINT public key for the key
