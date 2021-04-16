@@ -3,6 +3,7 @@
 /**
  * ec_load - loads keys from a file
  * @folder: path of the folder the files are stored in
+ *
  * Return: EC_KEY key pair
  */
 EC_KEY *ec_load(char const *folder)

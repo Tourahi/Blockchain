@@ -5,6 +5,7 @@
  * ec_save - save the key pair into a file
  * @key: key pair
  * @folder: folder path
+ *
  * Return: 1 | 0
  */
 int ec_save(EC_KEY *key, char const *folder)
