@@ -10,12 +10,12 @@
  * Return: 1 | 0
  */
 
-int ec_verify(EC_KEY const* key, uint8_t const* msg, size_t msglen,
-	sig_t const* sig)
+int ec_verify(EC_KEY const *key, uint8_t const *msg, size_t msglen,
+	sig_t const *sig)
 {
 	unsigned char hash[SHA256_DIGEST_LENGTH];
 
-	if ( !msg || !key || !sig)
+	if (!msg || !key || !sig)
 		return (0);
 	if (!EC_KEY_check_key(key))
 		return (0);
