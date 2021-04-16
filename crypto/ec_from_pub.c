@@ -1,14 +1,21 @@
 #include "hblk_crypto.h"
 
+/**
+ * ec_from_pub - generates EC_KEY from pub key
+ * @pub: the pub key in thebuffer
+ *
+ * Return: The generated EC_KEY struct
+ */
 
 EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN])
 {
 	EC_KEY *key;
 	EC_POINT *point;
-	const EC_GROUP *group;
+	EC_GROUP *group;
 
 	if (!pub)
 		return (NULL);
+
 	/*
 	*	See hblk_crypto.h fo the def of the EC_CURVE nid
 	*/
@@ -26,6 +33,7 @@ EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN])
 	point = EC_POINT_new(group);
 	if (!point)
 		return (NULL);
+
 	/*
 	*	convert from octet to EC_POINT
 	*/
