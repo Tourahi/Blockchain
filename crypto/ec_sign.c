@@ -13,11 +13,25 @@
 uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg
 	, size_t msglen, sig_t *sig)
 {
-	if (key == 0 || msg == 0 || sig == 0)
-		return (NULL);
-	if (ECDSA_sign(0, msg, msglen,sig->sig, (void *)&(sig->len),
-	(void *)key) != 1)
-		return (0);
+	uint8_t *ptrLen = &sig->len;
 
-	return (sig->sig);
+	if(key == NULL || msg == NULL)
+	{
+		free(ptrLen);
+		return NULL;
+	}
+
+	*ptrLen = ECDSA_size(key);
+	if(!(ECDSA_sign(0,(const unsigned char *)msg,msglen,sig->sig,(unsigned int *)ptrLen,(EC_KEY *)key)))
+	{
+		free(ptrLen);
+		return NULL;
+	}
+
+	if(sig->sig == NULL)
+	{
+		free(ptrLen);
+		return NULL;
+	}
+	return sig->sig;
 }
