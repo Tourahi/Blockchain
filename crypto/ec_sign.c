@@ -1,4 +1,7 @@
 #include "hblk_crypto.h"
+#include <string.h>
+
+
 
 /**
  * ec_sign - signs a message with private key
@@ -13,16 +16,17 @@
 uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg
 	, size_t msglen, sig_t *sig)
 {
-	if (!key || !msg)
-	{
-		return (NULL);
-	}
+	uint32_t len = 0;
 
-	if (ECDSA_sign(0, msg, msglen, sig->sig, (unsigned int *)&sig->len,
-			(EC_KEY *)key) == 0)
-	{
-		return (NULL);
-	}
+	if (!key || !msg || !msglen)
+		return NULL;
 
-	return ((uint8_t *)sig->sig);
+	memset(sig->sig, 0, sizeof(sig->sig));
+	if (!ECDSA_sign(0, msg, (int)msglen, sig->sig, &len, (EC_KEY *)key))
+	{
+		sig->len = 0;
+		return NULL;
+	}
+	sig->len = (uint8_t)len;
+	return sig->sig;
 }
