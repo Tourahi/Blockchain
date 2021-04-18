@@ -1,14 +1,29 @@
 #include "blockchain.h"
 
+
+/**
+ * set_header - configures the header then returns it
+ * @header: Header to configured
+ * @blockchain: points to the Blockchain
+ *
+ * Return: the configured header
+ */
 header_t set_header(header_t header, blockchain_t const *blockchain)
 {
 	memcpy(header.hblk_magic, HBLK_MAGIC, HBLK_MAGIC_LEN);
 	memcpy(header.hblk_version, HBLK_VERSION, HBLK_VERSION_LEN);
 	header.hblk_endian = _get_endianness();
 	header.hblk_blocks = llist_size(blockchain->chain);
-	return header;
+	return (header);
 }
 
+/**
+ * blockchain_serialize - serializes blockchain to file
+ * @blockchain: points to the Blockchain to be serialized
+ * @path: pcontains the path to a file to serialize the Blockchain into
+ *
+ * Return: 0 | -1
+ */
 int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 {
 	header_t h;
@@ -25,7 +40,7 @@ int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 		return (-1);
 	fwrite(&h, sizeof(h), 1, fp);
 
-	for(i = 0; i < h.hblk_blocks; i++)
+	for (i = 0; i < h.hblk_blocks; i++)
 	{
 		b = llist_get_node_at(blockchain->chain, i);
 		if (!b)
