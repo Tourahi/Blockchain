@@ -13,25 +13,11 @@
 uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg
 	, size_t msglen, sig_t *sig)
 {
-	unsigned char hash[SHA256_DIGEST_LENGTH];
-	unsigned int length;
-	if (!key || !msg || !sig || !msglen)
+	if (key == 0 || msg == 0 || sig == 0)
 		return (NULL);
+	if (ECDSA_sign(0, msg, msglen,sig->sig, (void *)&(sig->len),
+	(void *)key) != 1)
+		return (0);
 
-	if (!EC_KEY_check_key(key))
-		return (NULL);
-
-	if (!SHA256(msg, msglen, hash))
-		return (NULL);
-
-	sig->len = ECDSA_size(key);
-	if (!sig->len)
-		return (NULL);
-
-	length = sig->len;
-	if (ECDSA_sign(0, msg, msglen, sig->sig,
-			&length, (EC_KEY *)key) != 1)
-		return (NULL);
-	sig->len = length;
 	return (sig->sig);
 }
