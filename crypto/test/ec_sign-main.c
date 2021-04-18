@@ -17,8 +17,10 @@ static int test_ec_sign(EC_KEY const *key)
 {
     uint8_t const str[] = "Holberton";
     sig_t sig;
-
-    if (!ec_sign(key, str, strlen((char *)str), &sig))
+		int i = 0;
+	for (i = 0; i < 10; i++)
+	{
+		if (!ec_sign(key, str, strlen((char *)str), &sig))
     {
         fprintf(stderr, "ec_sign() failed\n");
         return (EXIT_FAILURE);
@@ -26,6 +28,7 @@ static int test_ec_sign(EC_KEY const *key)
     printf("Signature of \"%s\": ", str);
     _print_hex_buffer(sig.sig, sig.len);
     printf("\n");
+	}
 
     return (EXIT_SUCCESS);
 }
