@@ -17,9 +17,6 @@ static int test_ec_sign(EC_KEY const *key)
 {
     uint8_t const str[] = "Holberton";
     sig_t sig;
-		int i = 0;
-	for (i = 0; i < 10; i++)
-	{
 		if (!ec_sign(key, str, strlen((char *)str), &sig))
     {
         fprintf(stderr, "ec_sign() failed\n");
@@ -28,7 +25,6 @@ static int test_ec_sign(EC_KEY const *key)
     printf("Signature of \"%s\": ", str);
     _print_hex_buffer(sig.sig, sig.len);
     printf("\n");
-	}
 
     return (EXIT_SUCCESS);
 }
@@ -41,30 +37,34 @@ static int test_ec_sign(EC_KEY const *key)
 int main(void)
 {
     EC_KEY *key;
+		int i = 0;
 
     /* Prerequisites */
-    key = ec_create();
-    if (!key)
-    {
-        fprintf(stderr, "ec_create() failed\n");
-        return (EXIT_FAILURE);
-    }
-    printf("Successfully created EC key pair\n");
+		for (i = 0; i < 10; i++)
+		{
+			key = ec_create();
+			if (!key)
+			{
+					fprintf(stderr, "ec_create() failed\n");
+					return (EXIT_FAILURE);
+			}
+			printf("Successfully created EC key pair\n");
 
-    /* Test `ec_sign()` */
-    if (test_ec_sign(key) != EXIT_SUCCESS)
-    {
-        EC_KEY_free(key);
-        return (EXIT_FAILURE);
-    }
-    if (test_ec_sign(key) != EXIT_SUCCESS)
-    {
-        EC_KEY_free(key);
-        return (EXIT_FAILURE);
-    }
+			/* Test `ec_sign()` */
+			if (test_ec_sign(key) != EXIT_SUCCESS)
+			{
+					EC_KEY_free(key);
+					return (EXIT_FAILURE);
+			}
+			if (test_ec_sign(key) != EXIT_SUCCESS)
+			{
+					EC_KEY_free(key);
+					return (EXIT_FAILURE);
+			}
 
-    /* Cleanup */
-    EC_KEY_free(key);
+			/* Cleanup */
+			EC_KEY_free(key);
+		}
 
     return (EXIT_SUCCESS);
 }
