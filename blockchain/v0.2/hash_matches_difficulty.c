@@ -26,7 +26,7 @@ uint32_t diff(uint8_t const hash[SHA256_DIGEST_LENGTH])
 }
 
 /**
- * hash_matches_difficulty - check whether a given hash matches a given difficulty
+ * hash_matches_difficulty - check whether a given hash matches a difficulty
  * @hash: the hash to check
  * @difficulty: is the minimum difficulty the hash should match
  *
