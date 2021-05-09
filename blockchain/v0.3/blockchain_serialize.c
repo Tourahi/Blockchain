@@ -1,58 +1,45 @@
 #include "blockchain.h"
 
-
-/**
- * set_header - configures the header then returns it
- * @header: Header to configured
- * @blockchain: points to the Blockchain
- *
- * Return: the configured header
- */
-header_t set_header(header_t header, blockchain_t const *blockchain)
-{
-	memcpy(header.hblk_magic, HBLK_MAGIC, HBLK_MAGIC_LEN);
-	memcpy(header.hblk_version, HBLK_VERSION, HBLK_VERSION_LEN);
-	header.hblk_endian = _get_endianness();
-	header.hblk_blocks = llist_size(blockchain->chain);
-	return (header);
-}
-
 /**
  * blockchain_serialize - serializes blockchain to file
- * @blockchain: points to the Blockchain to be serialized
- * @path: pcontains the path to a file to serialize the Blockchain into
- *
- * Return: 0 | -1
+ * @blockchain: pointer to blockchain to serialize
+ * @path: path to save file
+ * Return: 0 on success else -1 on failure
  */
 int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 {
-	header_t h;
-	FILE *fp = NULL;
-	block_t *b = NULL;
-	int i = LOOP_START;
+	int fd, i, size;
+	uint8_t endianness = _get_endianness();
 
-	if (!blockchain || !path)
+	if (!blockchain || !blockchain->chain || !path)
 		return (-1);
-
-	h = set_header(h, blockchain);
-	fp = fopen(path, "w");
-	if (fp == NULL)
+	size = llist_size(blockchain->chain);
+	fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
+	if (fd == -1)
 		return (-1);
-	fwrite(&h, sizeof(h), 1, fp);
-
-	for (i = 0; i < h.hblk_blocks; i++)
+	if (write(fd, HBLK_MAGIC, strlen(HBLK_MAGIC)) != strlen(HBLK_MAGIC))
+		return (close(fd), -1);
+	if (write(fd, HBLK_VERSION, strlen(HBLK_VERSION)) != strlen(HBLK_VERSION))
+		return (close(fd), -1);
+	if (write(fd, &endianness, 1) != 1)
+		return (close(fd), -1);
+	if (write(fd, &size, 4) != 4)
+		return (close(fd), -1);
+	for (i = 0; i < size; i++)
 	{
-		b = llist_get_node_at(blockchain->chain, i);
-		if (!b)
-		{
-			fclose(fp);
-			return (-1);
-		}
-		fwrite((void *)&b->info, sizeof(b->info), 1, fp);
-		fwrite((void *)&b->data.len, sizeof(b->data.len), 1, fp);
-		fwrite(b->data.buffer, b->data.len, 1, fp);
-		fwrite((void *)&b->hash, sizeof(b->hash), 1, fp);
+		block_t *block = llist_get_node_at(blockchain->chain, i);
+
+		if (!block)
+			return (close(fd), -1);
+		if (write(fd, &(block->info), sizeof(block->info)) != sizeof(block->info))
+			return (close(fd), -1);
+		if (write(fd, &(block->data.len), 4) != 4)
+			return (close(fd), -1);
+		if (write(fd, block->data.buffer, block->data.len) != block->data.len)
+			return (close(fd), -1);
+		if (write(fd, block->hash, SHA256_DIGEST_LENGTH) !=
+			SHA256_DIGEST_LENGTH)
+			return (close(fd), -1);
 	}
-	fclose(fp);
-	return (0);
+	return (close(fd), 0);
 }

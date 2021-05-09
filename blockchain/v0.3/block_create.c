@@ -1,32 +1,25 @@
 #include "blockchain.h"
 
-
 /**
  * block_create - creates a new block in the sequence
- * @prev: pointer to the previous Block in the Blockchain
- * @data: points to a memory area to duplicate in the Block’s data
- * @data_len: stores the number of bytes to duplicate in data
- *
- * Return: ptr to a new block
+ * @prev: pointer to previous block
+ * @data: pointer of data to duplicate
+ * @data_len: length of data
+ * Return: pointer to new block or NULL
  */
-block_t *block_create(block_t const *prev,
-					int8_t const *data, uint32_t data_len)
+block_t *block_create(block_t const *prev, int8_t const *data,
+	uint32_t data_len)
 {
-	block_t *newB = calloc(1, sizeof(*newB));
-	uint32_t maxL = B_DATA_MAX;
+	block_t *block = calloc(1, sizeof(*block));
+	llist_t *transactions = llist_create(MT_SUPPORT_FALSE);
 
-	if (!newB)
-		return (NULL);
-
-	if (data_len < B_DATA_MAX)
-		maxL = data_len;
-
-	memcpy(&(newB->data.buffer), data, maxL);
-	newB->data.len = maxL;
-	newB->info.index = prev->info.index + 1;
-	newB->info.timestamp = (uint64_t)time(NULL);
-
-	memcpy(&(newB->info.prev_hash), prev->hash, SHA256_DIGEST_LENGTH);
-
-	return (newB);
+	if (!block || !transactions)
+		return (free(block), llist_destroy(transactions, 0, NULL), NULL);
+	memcpy(&(block->data.buffer), data, MIN(data_len, BLOCKCHAIN_DATA_MAX));
+	block->data.len = MIN(data_len, BLOCKCHAIN_DATA_MAX);
+	block->info.index = prev->info.index + 1;
+	block->info.timestamp = time(NULL);
+	block->transactions = transactions;
+	memcpy(&(block->info.prev_hash), prev->hash, SHA256_DIGEST_LENGTH);
+	return (block);
 }
