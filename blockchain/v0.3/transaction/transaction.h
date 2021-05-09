@@ -106,6 +106,7 @@ typedef struct Validation_Visitor
 	uint32_t block_index;
 } validation_vistor_t;
 
+
 tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN]);
 
 unspent_tx_out_t *unspent_tx_out_create(
